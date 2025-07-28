@@ -1,0 +1,254 @@
+/* style.css */
+
+/* Reset & Basis */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-size: clamp(0.75rem, 4vw, 1.25rem);
+}
+
+body {
+    background-color: #ffffff;
+    color: #24292e;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    line-height: 1.6rem;
+    padding: 1rem;
+}
+
+.container {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 1rem;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    background-color: #f6f8fa;
+    position: relative;
+}
+
+/* Überschriften & Texte */
+h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    margin-bottom: 1rem;
+    color: #57606a;
+}
+
+/* Eingabefelder */
+input[type="text"] {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #d1d5da;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #24292e;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #218838;
+}
+
+.accent-pressed {
+    transform: scale(0.9);
+    background-color: #24292e;
+}
+
+/* Buttons */
+button {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+button:not([disabled]):active {
+    transform: scale(0.98);
+}
+
+#startButton,
+#submitGuess,
+#resetButton {
+    background-color: #28a745;
+    color: #ffffff;
+}
+
+#startButton:hover,
+#submitGuess:hover,
+#resetButton:hover {
+    background-color: #218838;
+}
+
+#resetButton {
+    margin-top: 1rem;
+}
+
+/* Spielbereich */
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+}
+
+#gameArea {
+    margin-top: 2rem;
+}
+
+#wordDisplay {
+    display: inline-block;
+    font-size: 2rem;
+    letter-spacing: 0.5em;
+    margin-bottom: 1rem;
+    color: #24292e;
+}
+
+#message {
+    margin-top: 1rem;
+    font-weight: 500;
+}
+
+/* Hervorhebung bei Erfolg oder Fehler */
+#message.success {
+    color: #28a745;
+}
+
+#message.error {
+    color: #cb2431;
+}
+
+.key {
+    flex: 50 50 3rem;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0rem;
+    margin: 0rem;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    overflow: visible;
+    cursor: pointer;
+    min-width: 0;
+    font-size: 2rem;
+    height: 4rem;
+}
+
+div.key {
+    cursor: default;
+}
+
+button.key:not([disabled]):hover {
+    transform: scale(1.05);
+}
+
+button.key:not([disabled]):active {
+    transform: scale(0.95);
+}
+
+.wrong-guess {
+    background-color: #cb2431;
+}
+
+.correct-guess {
+    background-color: #28a745;
+}
+
+#hangmanArea {
+    font-family: monospace;
+    white-space: nowrap;
+    white-space-collapse: preserve;
+}
+
+.keyboard-row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin: 0.25rem 0rem;
+}
+
+.keyboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/*Settings*/
+#settingsPanel:not(.hidden) {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(300px, 90vw);
+    height: 100%;
+    background-color: #f6f8fa;
+    border-left: 1px solid #e1e4e8;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    z-index: 1000;
+}
+
+#settingsOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+}
+
+#settingsIcon {
+    position: absolute;
+    padding: 1.25rem;
+    top: 0rem;
+    right: 0rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#settingsPanel h2 {
+    margin-bottom: 1rem;
+}
+
+/*Tooltips when hovering over options in the settings*/
+
+#settingsPanel [data-tip]:after {
+    display: none;
+    content: attr(data-tip);
+    position: absolute;
+    top: 35px;
+    left: 0px;
+    padding: 5px 8px;
+    background: #1a1a1a;
+    color: #fff;
+    z-index: 9;
+    font-size: 0.75em;
+    height: 18px;
+    line-height: 18px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    white-space: nowrap;
+    word-wrap: normal;
+}
+
+#settingsPanel [data-tip]:hover:after {
+    display: block;
+}

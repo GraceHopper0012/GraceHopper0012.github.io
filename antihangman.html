@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Antihangman</title>
+        <link rel="stylesheet" href="style.css">
+        <script type="module" src="script.js" defer></script>
+    </head>
+    <body>
+        <div class="container">
+            <button id="settingsIcon" aria-label="Einstellungen" onclick="document.getElementById('settingsPanel').classList.remove('hidden');document.getElementById('settingsOverlay').classList.remove('hidden');">⚙️</button>
+            <h1>Antihangman</h1>
+            <p>Hangman mal neu gedacht</p>
+            <button id="startButton">Spiel starten</button>
+            <div id="gameArea" class="hidden">
+                <p id="wortArea"></p>
+                <p id="hangmanArea"></p>
+                <div role="group" class="desktop-only" style="margin-bottom:1rem">
+                    <input type="text" id="guessInput" placeholder="Dein Tipp hier...">
+                    <button id="submitGuess">Tipp abgeben</button>
+                </div>
+                <div class="keyboard" aria-label="Tastatur" role="group" id="keyboard">
+                </div>
+                <button id="resetButton" class="hidden">Neues Spiel</button>
+            </div>
+        </div>
+        <div class="hidden" id="settingsOverlay"></div>
+        <div class="hidden" id="settingsPanel">
+            <h2>Einstellungen</h2>
+            <p>Dies sind die Optionen</p>
+            <button onclick="document.getElementById('settingsOverlay').classList.add('hidden');document.getElementById('settingsPanel').classList.add('hidden');">Schließen</button>
+        </div>
+        <script>
+            const settingsPanel = document.getElementById("settingsPanel");
+            const settingsOverlay = document.getElementById("settingsOverlay");
+
+            settingsOverlay.addEventListener("click", () => {
+                settingsPanel.classList.add("hidden");
+                settingsOverlay.classList.add("hidden");
+            });
+        </script>
+    </body>
+</html>
