@@ -11,7 +11,7 @@
 body {
     background-color: #ffffff;
     color: #24292e;
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-family: 'Fira Code', monospace;
     line-height: 1.6rem;
     padding: 1rem;
 }
