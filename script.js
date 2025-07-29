@@ -83,14 +83,14 @@ function createKeyboard(layout) {
     ROWS.forEach(row => {
         let LEN_DIFF = row.childElementCount - MAX_LENGTH;
         if (LEN_DIFF < 0) {
-            for (let i=LEN_DIFF/2; i < 0; i++) {
+            for (let i=LEN_DIFF; i < 0; i++) {
                 let SPACE_DIV = document.createElement("div");
-                SPACE_DIV.classList.add("key");
+                SPACE_DIV.classList.add("halfkey");
                 row.insertBefore(SPACE_DIV, row.firstChild);
             }
-            for (let i = LEN_DIFF / 2; i < 0; i++) {
+            for (let i = LEN_DIFF; i < 0; i++) {
                 let SPACE_DIV = document.createElement("div");
-                SPACE_DIV.classList.add("key");
+                SPACE_DIV.classList.add("halfkey");
                 row.appendChild(SPACE_DIV);
             }
         };
@@ -135,4 +135,3 @@ SUBMIT_BUTTON.addEventListener("click", () => {
     let correct = guess(GUESSD);
     changeKey(GUESSD, correct);
 })
-
