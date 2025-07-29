@@ -132,7 +132,7 @@ button:not([disabled]):active {
 }
 
 .key {
-    flex: 50 50 3rem;
+    flex: 2 1 3rem;
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -147,8 +147,11 @@ button:not([disabled]):active {
     height: 4rem;
 }
 
-div.key {
-    cursor: default;
+.halfkey {
+    flex: 1 1 1.5rem;
+    flex-direction: row;
+    padding: 0rem;
+    margin: 0rem;
 }
 
 button.key:not([disabled]):hover {
@@ -177,9 +180,16 @@ button.key:not([disabled]):active {
     display: flex;
     flex-wrap: nowrap;
     justify-content: center;
-    gap: 0.25rem;
     width: 100%;
     margin: 0.125rem 0rem;
+}
+
+.keyboard-row > .key:not(:last-child) {
+    margin-right: 0.25rem;
+}
+
+.keyboard-row > .halfkey:not(:nth-last-child(-n+2)) {
+    margin-right: 0.125rem;
 }
 
 .keyboard {
