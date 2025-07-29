@@ -139,7 +139,6 @@ button:not([disabled]):active {
     padding: 0rem;
     margin: 0rem;
     font-size: 1.25rem;
-    text-transform: uppercase;
     overflow: visible;
     cursor: pointer;
     min-width: 0;
