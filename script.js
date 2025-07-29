@@ -70,7 +70,7 @@ function createKeyboard(layout) {
             BUTTON.ariaLabel = `${letter.toLowerCase()} raten`;
             BUTTON.type = "button";
             BUTTON.id = `keyletter-${letter.toLowerCase()}`;
-            BUTTON.textContent = letter.toUpperCase();
+            BUTTON.textContent = letter.toLocaleUpperCase("de-DE");
             BUTTON.classList.add("key");
             BUTTON.addEventListener("click", () => {
                 keyboardGuess(letter);
