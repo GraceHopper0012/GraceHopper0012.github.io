@@ -106,7 +106,7 @@ function spiel() {
 createKeyboard("qwertz")
 SETTINGS_HTML.innerHTML = "";
 for (const opt of Option.getAllOptions()) {
-    SETTINGS.innerHTML += opt.render();
+    SETTINGS_HTML.innerHTML += opt.render();
 }
 
 START_BUTTON.addEventListener("click", () => {
