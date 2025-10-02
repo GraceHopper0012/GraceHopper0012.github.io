@@ -1,17 +1,29 @@
 export class Option {
     static IDs = [];
+    static Options = {};
     constructor(type = "checkbox", name, id, hover_description, options = {}, custom_classes = [], defaultValue = false) {
         if (Option.IDs.includes(id)) {
             return false;
         }
         this.id = id;
         Option.IDs.push(id);
+        Option.Options[id] = this;
         this.type = type;
         this.name = name;
         this.hover_description = hover_description;
         this.value = defaultValue;
         this.options = options;
         this.custom_classes = custom_classes;
+    }
+
+    static getOptionById(id) {
+        if (!Option.IDs.includes(id)) {
+            return Option.Options[id];
+        }
+    }
+
+    static getAllOptions() {
+        return Object.values(Option.Options);
     }
 
     render() {

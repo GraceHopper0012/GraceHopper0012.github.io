@@ -28,8 +28,6 @@ const OPTIONS = {
     }
 }
 
-console.error(OPTIONS);
-
 function updateHangman() {
     HANGMAN_AREA.innerHTML = SPIEL.male_hangman(SPIEL.falsch_geraten.length);
 }
@@ -107,7 +105,7 @@ function spiel() {
 
 createKeyboard("qwertz")
 SETTINGS_HTML.innerHTML = "";
-for(const opt of OPTIONS) {
+for (const opt of Option.getAllOptions()) {
     SETTINGS.innerHTML += opt.render();
 }
 
