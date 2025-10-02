@@ -6,6 +6,7 @@ const GAME_AREA = document.getElementById("gameArea");
 const HANGMAN_AREA = document.getElementById("hangmanArea");
 const WORT_AREA = document.getElementById("wortArea");
 const GUESS_INPUT = document.getElementById("guessInput");
+const SETTINGS_HTML = document.getElementById("settingsArea");
 START_BUTTON.disabled = false;
 let multiguess = false;
 
@@ -105,6 +106,10 @@ function spiel() {
 }
 
 createKeyboard("qwertz")
+SETTINGS_HTML.innerHTML = "";
+for(const opt of OPTIONS) {
+    SETTINGS.innerHTML += opt.render();
+}
 
 START_BUTTON.addEventListener("click", () => {
     START_BUTTON.disabled = true;
