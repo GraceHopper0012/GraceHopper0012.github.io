@@ -1,63 +1,58 @@
 import { HangmanSpiel } from "./antihangman.js";
 import { Option } from "./options.js";
-
 const SUBMIT_BUTTON = document.getElementById("submitGuess");
 const START_BUTTON = document.getElementById("startButton");
 const GAME_AREA = document.getElementById("gameArea");
 const HANGMAN_AREA = document.getElementById("hangmanArea");
 const WORT_AREA = document.getElementById("wortArea");
 const GUESS_INPUT = document.getElementById("guessInput");
-const MESSAGE_EL = document.getElementById("message");
-const RESET_BUTTON = document.getElementById("resetButton");
-
+START_BUTTON.disabled = false;
 let multiguess = false;
-let godmode = false;
 
 const QWERTZ_KEYBOARD = ["qwertzuiopü", "asdfghjklöä", "yxcvbnm", "êéèâáàß", "ûúùôóòîíìý"];
-
-function toggleSettings() {
-    const panel = document.getElementById("settingsPanel");
-    const overlay = document.getElementById("settingsOverlay");
-    if (panel.classList.contains("hidden")) {
-        panel.classList.remove("hidden");
-        overlay.classList.remove("hidden");
-        renderSettings();
-    } else {
-        panel.classList.add("hidden");
-        overlay.classList.add("hidden");
-    }
-}
-
-function renderSettings() {
-    const container = document.getElementById("settingsPanel");
-    container.innerHTML = `
-        <h2>Einstellungen</h2>
-        <p>Dies sind die Optionen</p>
-        
-        <label>
-            <input type="checkbox" id="multiguessCheckbox">
-            Rate mehrere Buchstaben auf einmal
-        </label>
-        <button onclick="document.getElementById('settingsOverlay').classList.add('hidden');document.getElementById('settingsPanel').classList.add('hidden');">Schließen</button>
-    `;
-
-    const multig = document.getElementById("multiguessCheckbox");
-    if (multig) {
-        multig.addEventListener("change", () => {
-            multiguess = multig.checked;
-            updateConfig();
-        });
-    }
-}
-
-function updateConfig() {
-    // Persist or apply settings immediately
-    console.log("Multiguess:", multiguess);
-}
-
-// Keyboard setup
-const KEYBOARD_LAYOUTS = {"qwertz": QWERTZ_KEYBOARD};
+const KEYBOARD_LAYOUTS = {
+    "qwertz": QWERTZ_KEYBOARD,};
 const KEYBOARD = document.getElementById("keyboard");
+var gewonnen = false;
+const SPIEL = new HangmanSpiel();
+
+const OPTIONS = {
+    multiguessOption: new Option("checkbox","Rate mehrere Buchstaben aufeinmal","multiguess","Lässt dich bei der manuellen Eingabe mehrere Buchstaben auf einmal raten", {}, "desktop-only"),
+    get multiguess() {
+        return this.multiguessOption.value;
+    },
+    godmodeOption: new Option("checkbox", "Godmode", "godmode","Was, durch Genickbruch soll ich sterben???"),
+    get godmode() {
+        return this.godmodeOption.value;
+    }
+}
+
+console.error(OPTIONS);
+
+function updateHangman() {
+    HANGMAN_AREA.innerHTML = SPIEL.male_hangman(SPIEL.falsch_geraten.length);
+}
+
+function updateOverlay() {
+    WORT_AREA.innerHTML = SPIEL.male_wort(" ");
+    updateHangman();
+}
+
+function keyboardGuess(letter) {
+    let correct = guess(letter);
+    updateOverlay();
+    changeKey(letter, correct)
+}
+
+function changeKey(letter, correct) {
+    const BUTTON = document.getElementById(`keyletter-${letter.toLowerCase()}`);
+    if (correct) {
+        BUTTON.classList.add("correct-guess");
+    } else {
+        BUTTON.classList.add("wrong-guess");
+    }
+    BUTTON.disabled = "true";
+}
 
 function createKeyboard(layout) {
     const ROWS = [];
@@ -65,10 +60,11 @@ function createKeyboard(layout) {
     layout = KEYBOARD_LAYOUTS[layout];
 
     layout.forEach(row => {
-        if (MAX_LENGTH < row.length) MAX_LENGTH = row.length;
+        if (MAX_LENGTH < row.length) {
+            MAX_LENGTH = row.length;
+        };
         const ROW_DIV = document.createElement("div");
         ROW_DIV.classList.add("keyboard-row");
-        
         [...row].forEach(letter => {
             const BUTTON = document.createElement("button");
             BUTTON.ariaLabel = `${letter.toLowerCase()} raten`;
@@ -76,120 +72,66 @@ function createKeyboard(layout) {
             BUTTON.id = `keyletter-${letter.toLowerCase()}`;
             BUTTON.textContent = letter.toLocaleUpperCase("de-DE");
             BUTTON.classList.add("key");
-            BUTTON.addEventListener("click", () => keyboardGuess(letter));
+            BUTTON.addEventListener("click", () => {
+                keyboardGuess(letter);
+            });
+
             ROW_DIV.appendChild(BUTTON);
         });
-        
-        // Add halfkeys for alignment
-        let diff = MAX_LENGTH - row.length;
-        if (diff > 0) {
-            for (let i = 0; i < diff / 2; i++) ROW_DIV.appendChild(document.createElement("div"));
-        }
         ROWS.push(ROW_DIV);
-    });
-    
-    KEYBOARD.innerHTML = "";
-    ROWS.forEach(row => KEYBOARD.appendChild(row));
+    })
+    ROWS.forEach(row => {
+        let LEN_DIFF = row.childElementCount - MAX_LENGTH;
+        if (LEN_DIFF < 0) {
+            for (let i=LEN_DIFF; i < 0; i++) {
+                let SPACE_DIV = document.createElement("div");
+                SPACE_DIV.classList.add("halfkey");
+                row.insertBefore(SPACE_DIV, row.firstChild);
+            }
+            for (let i = LEN_DIFF; i < 0; i++) {
+                let SPACE_DIV = document.createElement("div");
+                SPACE_DIV.classList.add("halfkey");
+                row.appendChild(SPACE_DIV);
+            }
+        };
+        KEYBOARD.appendChild(row);
+    })
 }
 
-function updateOverlay() {
-    WORT_AREA.textContent = SPIEL.male_wort();
-    HANGMAN_AREA.innerHTML = SPIEL.male_hangman(SPIEL.falsch_geraten.length);
-    
-    // Update keys
-    document.querySelectorAll(".key").forEach(btn => {
-        btn.className = "key";
-        if (SPIEL.geraten.includes(btn.id.split("-")[1])) {
-            btn.disabled = true;
-            const letter = btn.textContent.toLowerCase();
-            if (!SPIEL.falsch_geraten.includes(letter)) btn.classList.add("correct-guess");
-            else btn.classList.add("wrong-guess");
-        }
-    });
-}
-
-function keyboardGuess(letter) {
-    if (letter.length !== 1 || !SPIEL.started) return;
-    
-    let correct = false;
-    if (multiguess) {
-        // Handle multi-input: process all chars in input at once
-        const guessInput = GUESS_INPUT.value.trim();
-        if (!guessInput) return;
-        
-        guessInput.forEach(char => {
-            const isCorrectLetter = SPIEL.geraten.includes(char.toLowerCase()) || 
-                                     (multiguess && !SPIEL.falsch_geraten.includes(char.toLowerCase()));
-            correct = true; // Simplified for demo
-        });
-        updateOverlay();
-    } else {
-        correct = SPIEL.raten(letter);
-        if (!correct) SPIEL.falsch(SPIEL.geraten[SPIEL.geraten.length - 1]);
-        updateOverlay();
-    }
-
-    checkGameState();
-}
-
-function checkGameState() {
-    const won = SPIEL.ueberpruefe_gewonnen();
-    const lost = SPIEL.falsch_geraten.length >= 6 && !won; // Standard hangman limit
-
-    if (won) {
-        MESSAGE_EL.textContent = "🎉 Du hast das Wort gelöst!";
-        MESSAGE_EL.className = "message success";
-        disableInput();
-        RESET_BUTTON.classList.remove("hidden");
-    } else if (lost) {
-        MESSAGE_EL.textContent = `💀 Spiel verloren. Das Wort war: ${SPIEL.wort.toUpperCase()}`;
-        MESSAGE_EL.className = "message error";
-        disableInput();
-        RESET_BUTTON.classList.remove("hidden");
+function spiel() {
+    while (!gewonnen) {
+        HANGMAN_AREA.innerHTML = SPIEL.erstelle_overlay()
     }
 }
 
-function disableInput() {
-    GUESS_INPUT.disabled = true;
-    SUBMIT_BUTTON.disabled = true;
-    document.querySelectorAll(".key").forEach(b => b.disabled = true);
-}
+createKeyboard("qwertz")
 
-// Event Listeners
 START_BUTTON.addEventListener("click", () => {
-    SPIEL.start();
     START_BUTTON.disabled = true;
     SUBMIT_BUTTON.disabled = false;
     GAME_AREA.classList.remove("hidden");
     START_BUTTON.classList.add("hidden");
     GUESS_INPUT.disabled = false;
     GUESS_INPUT.focus();
-    updateOverlay();
 });
+
+function guess(letter) {
+    return SPIEL.raten(letter);
+}
 
 SUBMIT_BUTTON.addEventListener("click", () => {
-    const guessInput = GUESS_INPUT.value.trim().toLowerCase();
-    if (!guessInput) return;
-    
+    const GUESSD = GUESS_INPUT.value.trim();
     if (multiguess) {
-        guessInput.split("").forEach(letter => keyboardGuess(letter));
-    } else if (guessInput.length === 1) {
-        keyboardGuess(guessInput);
+        GUESSD.forEach((letter) => {
+            let correct = guess(letter);
+            changeKey(letter, correct);
+        });
+        return;
     }
-});
 
-RESET_BUTTON.addEventListener("click", () => {
-    GAME_AREA.classList.add("hidden");
-    START_BUTTON.disabled = false;
-    START_BUTTON.classList.remove("hidden");
-    GUESS_INPUT.value = "";
-    GUESS_INPUT.disabled = false;
-    MESSAGE_EL.textContent = "";
-    RESET_BUTTON.classList.add("hidden");
-});
-
-// Init Keyboard & Settings Panel
-document.addEventListener("DOMContentLoaded", () => {
-    createKeyboard("qwertz");
-    renderSettings();
-});
+    if (GUESSD.length !== 1) {
+        return
+    }
+    let correct = guess(GUESSD);
+    changeKey(GUESSD, correct);
+})
