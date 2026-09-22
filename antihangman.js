@@ -129,7 +129,7 @@ export class HangmanSpiel {
         if (wort != String || wort === "" || wort.length <= MINDEST_LAENGE) {
             return false;
         }
-        return True
+        return true
     }
 
     raten(buchstab) {
