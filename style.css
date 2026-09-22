@@ -14,19 +14,19 @@ body {
     font-family: 'Fira Code', monospace;
     line-height: 1.6rem;
     padding: 1rem;
+    min-height: 100vh;
 }
 
 .container {
     max-width: 40rem;
     margin: 0 auto;
-    padding: 0.5rem;
+    padding: 1rem;
     border: 1px solid #e1e4e8;
     border-radius: 6px;
     background-color: #f6f8fa;
     position: relative;
 }
 
-/* Überschriften & Texte */
 h1 {
     font-size: 2rem;
     font-weight: 600;
@@ -38,7 +38,6 @@ p {
     color: #57606a;
 }
 
-/* Eingabefelder */
 input[type="text"] {
     width: 100%;
     padding: 0.5rem 0.75rem;
@@ -49,12 +48,13 @@ input[type="text"] {
     color: #24292e;
     font-size: 1rem;
     font-family: inherit;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 input[type="text"]:focus {
     outline: none;
     border-color: #218838;
+    box-shadow: 0 0 0 2px rgba(33, 136, 56, 0.2);
 }
 
 .accent-pressed {
@@ -77,39 +77,27 @@ button:not([disabled]):active {
     transform: scale(0.98);
 }
 
-#startButton,
-#submitGuess,
-#resetButton {
+#startButton, #submitGuess, #resetButton {
     background-color: #28a745;
     color: #ffffff;
 }
 
-#startButton:hover,
-#submitGuess:hover,
-#resetButton:hover {
+#startButton:hover, #submitGuess:hover, #resetButton:hover {
     background-color: #218838;
 }
 
-#resetButton {
-    margin-top: 1rem;
-}
+#resetButton { margin-top: 1rem; }
 
-/* Spielbereich */
-.hidden {
-    display: none;
-}
+/* Spielbereich & Messages */
+.hidden { display: none; }
 
 @media (max-width: 768px) {
-    .desktop-only {
-        display: none;
-    }
+    .desktop-only { display: none; }
 }
 
-#gameArea {
-    margin-top: 2rem;
-}
+#gameArea { margin-top: 2rem; }
 
-#wordDisplay {
+#wordDisplay, #wortArea {
     display: inline-block;
     font-size: 2rem;
     letter-spacing: 0.5em;
@@ -117,40 +105,37 @@ button:not([disabled]):active {
     color: #24292e;
 }
 
+/* ADDED: Message styling */
 #message {
     margin-top: 1rem;
-    font-weight: 500;
+    font-weight: 600;
+    min-height: 1.5em;
 }
 
-/* Hervorhebung bei Erfolg oder Fehler */
-#message.success {
-    color: #28a745;
-}
+.message.success { color: #28a745; }
+.message.error { color: #cb2431; }
 
-#message.error {
-    color: #cb2431;
-}
-
+/* Keyboard */
 .key {
     flex: 2 1 3rem;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 0rem;
-    margin: 0rem;
+    padding: 0.75rem 0.5rem;
+    margin: 0.25rem;
     font-size: 1.25rem;
-    overflow: visible;
+    overflow: hidden; /* FIXED: prevents spillover */
     cursor: pointer;
     min-width: 0;
     font-size: 2rem;
     height: 4rem;
+    text-align: center;
 }
 
 .halfkey {
     flex: 1 1 1.5rem;
-    flex-direction: row;
-    padding: 0rem;
-    margin: 0rem;
+    padding: 0.75rem 0.5rem;
+    margin: 0.25rem;
+    font-size: 2rem;
+    height: 4rem;
+    text-align: center;
 }
 
 button.key:not([disabled]):hover {
@@ -161,103 +146,21 @@ button.key:not([disabled]):active {
     transform: scale(0.95);
 }
 
-.wrong-guess {
-    background-color: #cb2431;
-}
-
-.correct-guess {
-    background-color: #28a745;
-}
+.wrong-guess { background-color: #cb2431; }
+.correct-guess { background-color: #28a745; }
 
 #hangmanArea {
     font-family: monospace;
     white-space: nowrap;
     white-space-collapse: preserve;
+    margin-bottom: 1rem;
 }
 
 .keyboard-row {
     display: flex;
-    flex-wrap: nowrap;
     justify-content: center;
     width: 100%;
-    margin: 0.125rem 0rem;
+    gap: 0.25rem; /* FIXED: cleaner spacing */
 }
 
-.keyboard-row > .key:not(:last-child) {
-    margin-right: 0.25rem;
-}
-
-.keyboard-row > .halfkey:not(:nth-last-child(-n+2)) {
-    margin-right: 0.125rem;
-}
-
-.keyboard {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-/*Settings*/
-#settingsPanel:not(.hidden) {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: min(300px, 90vw);
-    height: 100%;
-    background-color: #f6f8fa;
-    border-left: 1px solid #e1e4e8;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-    z-index: 1000;
-}
-
-#settingsOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    z-index: 999;
-}
-
-#settingsIcon {
-    position: absolute;
-    padding: 1.25rem;
-    top: 0rem;
-    right: 0rem;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-#settingsPanel h2 {
-    margin-bottom: 1rem;
-}
-
-/*Tooltips when hovering over options in the settings*/
-
-#settingsPanel [data-tip]:after {
-    display: none;
-    content: attr(data-tip);
-    position: absolute;
-    top: 35px;
-    left: 0px;
-    padding: 5px 8px;
-    background: #1a1a1a;
-    color: #fff;
-    z-index: 9;
-    font-size: 0.75em;
-    height: 18px;
-    line-height: 18px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    white-space: nowrap;
-    word-wrap: normal;
-}
-
-#settingsPanel [data-tip]:hover:after {
-    display: block;
-}
+.button { cursor: pointer; }
